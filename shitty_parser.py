@@ -34,20 +34,23 @@ def parse(exp):
     d = deque(exp)
     return _parse(d)
 
-def _parse(exp, depth=0):
+def _parse(exp):
+    if not exp:
+        raise IOError, "Not a wff."
     char = exp.popleft()
     if char in string.ascii_lowercase:
         return Node("atom", char)
     elif char == "~":
-        return Node("~", _parse(exp, depth+1))
+        return Node("~", _parse(exp))
     elif char == "(":
-        l = _parse(exp, depth+1)
+        l = _parse(exp)
         op = exp.popleft()
-        r = _parse(exp, depth+1)
-        exp.popleft()
+        r = _parse(exp)
         return Node(op, l, r)
+    else:
+        raise IOError, "Not a wff."
 
 if __name__ == "__main__":
-    n = Node("~", Node("atom", "A"))
-    parse("~(a&b)").treeprint()
+    tree = parse("~(a&b)")
+    tree.treeprint()
     #parse("((a%c)&~b)").treeprint()
