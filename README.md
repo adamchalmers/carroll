@@ -2,7 +2,16 @@
 Carroll is a **C**ommand-line **A**pp for **R**apidly **R**emoving **O**bstacles in **L**earning **L**ogic.
 
 <h2>Usage</h2>
-`$ python carroll.py "(A&B)v(~Av~B)"`
+`$ python carroll.py "((A&B)v(~A&~B))"
+
+ A  B  True
+
+~A  B  False
+
+ A ~B  False
+
+~A ~B  True
+`
 
 <h2>Current features:</h2>
 
