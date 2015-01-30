@@ -1,5 +1,5 @@
 # Carroll
-Carroll is a **C**ommand-line **A**pp for **R**apidly **R**emoving **O**bstacles in **L**earning **L**ogic.
+Carroll is a **C**ommand-line **A**pp for **R**apidly **R**emoving **O**bstacles to **L**earning **L**ogic.
 
 <h2>Usage</h2>
 ```
