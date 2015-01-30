@@ -6,6 +6,7 @@ from symbols import meaning_of
 from nodes import AtomNode, NotNode, AndNode, OrNode
 
 def parse(exp):
+    """Starts parsing a logical expression (supplied as a string). Returns a tree of Nodes."""
     d = deque(exp)
     tree = _parse(d)
     if d:
@@ -14,6 +15,7 @@ def parse(exp):
         return tree
 
 def _parse(exp):
+    """Recursive-descent parsing algorithm for logic expressions. Returns a tree of Nodes."""
     if not exp:
         raise IOError("Empty string is not a wff.")
     char = exp.popleft()

@@ -8,6 +8,7 @@ NODE_TYPES = [(string.ascii_uppercase, nodes.AtomNode),
     ("!~", nodes.NotNode),
 ]
 
+# Map every recognized character to its node type.
 _symbols = defaultdict(lambda: None)
 for symbols, node in NODE_TYPES:
     for symbol in symbols:
@@ -15,6 +16,7 @@ for symbols, node in NODE_TYPES:
 
 
 def meaning_of(symbol):
+    """Returns the type of node this symbol represents."""
     return _symbols[symbol]
 
 def test_symbol_mapping():

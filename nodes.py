@@ -2,12 +2,20 @@ T = True
 F = False
 
 class Node(object):
+    """Base class for logic nodes.
+
+    A node forms an expression tree for a sentence of symbolic logic."""
     def __init__(self, l, r=None):
+        """Assigns the node's child/children."""
         self.l = l
         self.r = r
     def eval(self, model):
+        """Evaluates the logic tree rooted at this node against a supplied model.
+
+        Model is an assignment of truth values to atoms (dict of string -> bool)."""
         raise NotImplementedError
     def tree_print(self, d=0):
+        """Recursively prints the logic tree to stdout."""
         raise NotImplementedError
 
 
@@ -36,6 +44,9 @@ class NotNode(Node):
         self.l.tree_print(d+1)
 
 class AtomNode(Node):
+    """These nodes will always form the leaves of a logic tree.
+
+    They are the only node whose children are strings, not other nodes."""
     def eval(self, model):
         return model[self.l]
     def tree_print(self, d=0):

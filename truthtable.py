@@ -8,6 +8,7 @@ T = True
 F = False
 
 def print_truth_table(exp):
+    """Outputs the truth table for an expression to stdout."""
     try:
         tree = parser.parse(exp)
         atoms = list(set([char for char in exp if char in string.ascii_uppercase]))
@@ -17,6 +18,7 @@ def print_truth_table(exp):
         print("Parse error: %s" % e)
 
 def gen_truths(atoms):
+    """Yields all possible maps of variables to truth values."""
     if len(atoms) == 1:
         yield {atoms[0]: T}
         yield {atoms[0]: F}
@@ -26,13 +28,11 @@ def gen_truths(atoms):
             yield dict([(atoms[0], F)] + truth.items())
 
 def truth_to_str(truth):
-    s = ""
+    """Produce a nice-formatted string of a truth assignment, e.g. " A ~B  C"."""
     prefix = {True: " ", False: "~"}
     items = truth.items()
     items.sort()
-    for var, value in items:
-        s += prefix[value] + var + " "
-    return s
+    return "".join([prefix[value] + var + " " for var, value in items])
 
 # Tests
 
@@ -48,6 +48,7 @@ def test_gen_truths_recursive():
             {"A": F, "B": F},
     ]
     actual = [truth for truth in gen_truths(["A", "B"])]
+    assert_items_equal(expected, actual)
 
 def test_gen_truths_recursive_long():
     expected = [
