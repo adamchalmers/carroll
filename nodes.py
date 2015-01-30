@@ -16,7 +16,7 @@ class AndNode(Node):
     def eval(self, model):
         return self.l.eval(model) and self.r.eval(model)
     def tree_print(self, d=0):
-        print "  "*d, "&"
+        print("  "*d + "&")
         self.l.tree_print(d+1)
         self.r.tree_print(d+1)
 
@@ -24,7 +24,7 @@ class OrNode(Node):
     def eval(self, model):
         return self.l.eval(model) or self.r.eval(model)
     def tree_print(self, d=0):
-        print "  "*d, "v"
+        print("  "*d + "v")
         self.l.tree_print(d+1)
         self.r.tree_print(d+1)
 
@@ -32,14 +32,14 @@ class NotNode(Node):
     def eval(self, model):
         return not self.l.eval(model)
     def tree_print(self, d=0):
-        print "  "*d, "~"
+        print("  "*d +"~")
         self.l.tree_print(d+1)
 
 class AtomNode(Node):
     def eval(self, model):
         return model[self.l]
     def tree_print(self, d=0):
-        print "  "*d, self.l
+        print("  "*d + self.l)
 
 def test_single_node_eval():
     a = AtomNode("a")

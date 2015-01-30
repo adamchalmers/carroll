@@ -7,11 +7,15 @@ from nodes import AtomNode, NotNode, AndNode, OrNode
 
 def parse(exp):
     d = deque(exp)
-    return _parse(d)
+    tree = _parse(d)
+    if d:
+        raise IOError("Unconsumed tokens %s" % "".join(d))
+    else:
+        return tree
 
 def _parse(exp):
     if not exp:
-        raise IOError, "Empty string is not a wff."
+        raise IOError("Empty string is not a wff.")
     char = exp.popleft()
     if meaning_of(char) == AtomNode:
         return AtomNode(char)
@@ -21,10 +25,11 @@ def _parse(exp):
         l = _parse(exp)
         op = exp.popleft()
         r = _parse(exp)
-        exp.popleft()  # Get rid of the )
+        if not exp or exp.popleft() != ")":
+            raise IOError("Missing )")
         return meaning_of(op)(l, r)
     else:
-        raise IOError, "%s can't start a wff." % char
+        raise IOError("%s can't start a wff." % char)
 
 def test_error_parse():
     assert_raises(IOError, parse, "")
@@ -32,6 +37,10 @@ def test_error_parse():
     assert_raises(IOError, parse, "()")
     assert_raises(IOError, parse, "(~)")
     assert_raises(IOError, parse, "&")
+    assert_raises(IOError, parse, "BvC")
+    assert_raises(IOError, parse, "A&A")
+    assert_raises(IOError, parse, "(A&BC")
+    assert_raises(IOError, parse, "(A&B")
 
 def test_atom_parse():
     assert_is_instance(parse("A"), AtomNode)
@@ -90,3 +99,7 @@ def test_complex_parse():
     assert_is_instance(n.r.l, AtomNode)
     assert_is_instance(n.r.r, NotNode)
     assert_is_instance(n.r.r.l, AtomNode)
+
+if __name__ == "__main__":
+    n = parse("((~A|B)v(B&~C))")
+    n.tree_print()
