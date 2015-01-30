@@ -1,7 +1,7 @@
 T = True
 F = False
 
-class Node():
+class Node(object):
     def __init__(self, l, r=None):
         self.l = l
         self.r = r
@@ -41,7 +41,7 @@ class AtomNode(Node):
     def tree_print(self, d=0):
         print "  "*d, self.l
 
-if __name__ == "__main__":
+def test_single_node_eval():
     a = AtomNode("a")
     b = AtomNode("b")
     model = {"a": T, "b": F}
@@ -57,8 +57,13 @@ if __name__ == "__main__":
     assert not AndNode(b, b).eval(model)
     assert not NotNode(a).eval(model)
     assert NotNode(b).eval(model)
+
+def test_compound_node_eval():
+    a = AtomNode("a")
+    b = AtomNode("b")
+    model = {"a": T, "b": F}
     assert NotNode(NotNode(a)).eval(model)
     assert NotNode(AndNode(a, b)).eval(model)
     assert not NotNode(OrNode(a, b)).eval(model)
     assert OrNode(NotNode(AndNode(a,b)), NotNode(OrNode(a, b))).eval(model)
-# p.eval({"A": true, "B": false})
+    assert NotNode(OrNode(b, b))

@@ -2,21 +2,28 @@ import string
 import nodes
 from collections import defaultdict
 
-symbols = defaultdict(lambda: None)
-for letter in string.ascii_uppercase:
-    symbols[letter] = nodes.AtomNode
-symbols["!"] = nodes.NotNode
-symbols["~"] = nodes.NotNode
-symbols["&"] = nodes.AndNode
-symbols["^"] = nodes.AndNode
-symbols["|"] = nodes.OrNode
-symbols["v"] = nodes.OrNode
+NODE_TYPES = [(string.ascii_uppercase, nodes.AtomNode),
+    ("&^", nodes.AndNode),
+    ("|v", nodes.OrNode),
+    ("!~", nodes.NotNode),
+]
 
-def to_node(symbol):
-    return symbols[symbol]
+_symbols = defaultdict(lambda: None)
+for symbols, node in NODE_TYPES:
+    for symbol in symbols:
+        _symbols[symbol] = node
 
-if __name__ == "__main__":
-    assert to_node("A") == nodes.AtomNode
-    assert to_node("&") == nodes.AndNode
-    assert to_node("v") == nodes.OrNode
-    assert to_node(")") == None
+
+def meaning_of(symbol):
+    return _symbols[symbol]
+
+def test_symbol_mapping():
+    assert meaning_of("A") == nodes.AtomNode
+    assert meaning_of("B") == nodes.AtomNode
+    assert meaning_of("Y") == nodes.AtomNode
+    assert meaning_of("&") == nodes.AndNode
+    assert meaning_of("v") == nodes.OrNode
+    assert meaning_of(")") == None
+    assert meaning_of("(") == None
+    assert meaning_of("d") == None
+
