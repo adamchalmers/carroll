@@ -9,6 +9,7 @@ $ python carroll.py "((A&B)v(~A&~B))"
  A ~B  False
 ~A ~B  True
 ```
+You can find which connectives various characters map to in `symbols.py`. 
 
 <h2>Current features:</h2>
 
