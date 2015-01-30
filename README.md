@@ -9,7 +9,7 @@ $ python carroll.py "((A&B)v(~A&~B))"
  A ~B  False
 ~A ~B  True
 ```
-You can find which connectives various characters map to in `symbols.py`. 
+To find out which characters Carroll interprets as connectives (and to define your own), see `symbols.py`.
 
 <h2>Current features:</h2>
 
@@ -18,7 +18,6 @@ You can find which connectives various characters map to in `symbols.py`.
 
 <h2>Planned features:</h2>
 
- - Evaluate propositions against a model
  - Check propositions for equivalences
  - Simplify expressions
  - Use user-defined connectives
