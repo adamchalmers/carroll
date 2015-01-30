@@ -7,23 +7,39 @@ class Node():
         self.r = r
     def eval(self, model):
         raise NotImplementedError
+    def tree_print(self, d=0):
+        raise NotImplementedError
+
 
 
 class AndNode(Node):
     def eval(self, model):
         return self.l.eval(model) and self.r.eval(model)
+    def tree_print(self, d=0):
+        print "  "*d, "&"
+        self.l.tree_print(d+1)
+        self.r.tree_print(d+1)
 
 class OrNode(Node):
     def eval(self, model):
         return self.l.eval(model) or self.r.eval(model)
+    def tree_print(self, d=0):
+        print "  "*d, "v"
+        self.l.tree_print(d+1)
+        self.r.tree_print(d+1)
 
 class NotNode(Node):
     def eval(self, model):
         return not self.l.eval(model)
+    def tree_print(self, d=0):
+        print "  "*d, "~"
+        self.l.tree_print(d+1)
 
 class AtomNode(Node):
     def eval(self, model):
         return model[self.l]
+    def tree_print(self, d=0):
+        print "  "*d, self.l
 
 if __name__ == "__main__":
     a = AtomNode("a")
