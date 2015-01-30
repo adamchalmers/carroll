@@ -10,7 +10,7 @@ F = False
 def print_truth_table(exp):
     try:
         tree = parser.parse(exp)
-        atoms = [char for char in exp if char in string.ascii_uppercase]
+        atoms = list(set([char for char in exp if char in string.ascii_uppercase]))
         for truth in gen_truths(atoms):
             print(truth_to_str(truth), tree.eval(truth))
     except IOError as e:
