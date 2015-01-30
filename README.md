@@ -6,3 +6,4 @@ Carroll is a **C**ommand-line **A**pp for **R**apidly **R**emoving **O**bscuriti
  - Evaluate propositions against a model
  - Check propositions for equivalences
  - Simplify expressions
+ - Use user-defined connectives
