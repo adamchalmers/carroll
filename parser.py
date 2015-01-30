@@ -7,6 +7,7 @@ from nodes import AtomNode, NotNode, AndNode, OrNode
 
 def parse(exp):
     """Starts parsing a logical expression (supplied as a string). Returns a tree of Nodes."""
+    exp = exp.replace(" ", "")
     d = deque(exp)
     tree = _parse(d)
     if d:
@@ -43,6 +44,10 @@ def test_error_parse():
     assert_raises(IOError, parse, "A&A")
     assert_raises(IOError, parse, "(A&BC")
     assert_raises(IOError, parse, "(A&B")
+
+def test_spaces_parse():
+    parse("(A & B)")
+    parse("(A& ~ B)")
 
 def test_atom_parse():
     assert_is_instance(parse("A"), AtomNode)
