@@ -48,12 +48,17 @@ def row_to_str(row):
     truth_assignment, value = row
     return truth_to_str(truth_assignment) + " " + str(value)
 
-def equivalent(exp1, exp2):
-    table1, table2 = truth_table(exp1), truth_table(exp2)
-    for row1, row2 in zip(table1, table2):
-        if row1 != row2:
+def all_equal(iterable):
+    iterable = iter(iterable)
+    first = iterable.next()
+    for element in iterable:
+        if element != first:
             return False
     return True
+
+def equivalent(exp1, exp2):
+    table1, table2 = truth_table(exp1), truth_table(exp2)
+    return all([row1 == row2 for row1, row2 in zip(table1, table2)])
 
 
 # Tests
@@ -127,3 +132,15 @@ def test_equiv_complex():
 
 def test_not_equiv_complex():
     assert not equivalent("(AvB)", "(!A&!B)")
+
+def test_all_equal():
+    assert all_equal([1,1,1])
+    assert all_equal([True])
+    assert all_equal([True, True, True])
+    assert all_equal([False])
+    assert all_equal([False, False, False])
+
+def test_not_all_equal():
+    assert not all_equal([1,2])
+    assert not all_equal([True, False])
+    assert not all_equal([True, 2])
