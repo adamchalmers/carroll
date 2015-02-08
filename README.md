@@ -11,6 +11,8 @@ $ python carroll.py table "((A&B) v (~A&~B))"
 ```
 To find out which characters Carroll interprets as connectives (and to define your own), see `symbols.py`.
 
+**Dependencies:** Carroll uses Nose and Click.
+
 <h2>Current features:</h2>
 
  - Parse classical logic strings
