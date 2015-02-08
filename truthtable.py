@@ -7,24 +7,38 @@ from nose.tools import assert_items_equal, assert_equal
 T = True
 F = False
 
+class Row():
+
+    def __init__(self, model, value):
+        self.model = model
+        self.value = value
+
+    def __str__(self):
+        return truth_to_str(self.model) + " " + str(self.value)
+
+    def __eq__(self, other):
+        return isinstance(other, Row) and self.model == other.model and self.value == other.value
+
+
 def print_truth_table(exp, output=True):
     """Outputs the truth table for an expression to stdout."""
-    _table = []
     try:
         tree = parser.parse(exp)
     except IOError as e:
         print("Parse error: %s" % e)
         return
     for row in truth_table(exp):
-        print(row_to_str(row))
+        print(row)
 
 def truth_table(exp):
+    """Generates truth table rows from a proposition string."""
     tree = parser.parse(exp)
     atoms = find_atoms(exp)
     for truth in gen_truths(atoms):
-        yield (truth, tree.eval(truth))
+        yield Row(truth, tree.eval(truth))
 
 def find_atoms(exp):
+    """Returns a list of atoms in a proposition string."""
     return list(set([char for char in exp if char in string.ascii_uppercase]))
 
 def gen_truths(atoms):
@@ -43,10 +57,6 @@ def truth_to_str(truth):
     items = truth.items()
     items.sort()
     return "".join([prefix[value] + var + " " for var, value in items])
-
-def row_to_str(row):
-    truth_assignment, value = row
-    return truth_to_str(truth_assignment) + " " + str(value)
 
 def all_equal(iterable):
     iterable = iter(iterable)
@@ -99,20 +109,20 @@ def test_find_atoms():
 
 def test_truth_table_and():
     expected_table = [
-            ({"A": T, "B": T}, T),
-            ({"A": T, "B": F}, F),
-            ({"A": F, "B": T}, F),
-            ({"A": F, "B": F}, F),
+            Row({"A": T, "B": T}, T),
+            Row({"A": T, "B": F}, F),
+            Row({"A": F, "B": T}, F),
+            Row({"A": F, "B": F}, F),
     ]
     actual_table = truth_table("(A&B)")
     assert_items_equal(expected_table, actual_table)
 
 def test_truth_table_or():
     expected_table = [
-            ({"A": T, "B": T}, T),
-            ({"A": T, "B": F}, T),
-            ({"A": F, "B": T}, T),
-            ({"A": F, "B": F}, F),
+            Row({"A": T, "B": T}, T),
+            Row({"A": T, "B": F}, T),
+            Row({"A": F, "B": T}, T),
+            Row({"A": F, "B": F}, F),
     ]
     actual_table = truth_table("(AvB)")
     assert_items_equal(expected_table, actual_table)
