@@ -107,6 +107,13 @@ def test_complex_parse():
     assert_is_instance(n.r.r, NotNode)
     assert_is_instance(n.r.r.l, AtomNode)
 
+def test_multiple_operand_parse():
+    n = parse("(A&A&A)")
+    assert_is_instance(n, AndNode)
+    assert_is_instance(n.l, AtomNode)
+    assert_is_instance(n.r, AtomNode)
+    assert_is_instance(n.more[0], AtomNode)
+
 if __name__ == "__main__":
     n = parse("((~A|B)v(B&~C))")
     n.tree_print()

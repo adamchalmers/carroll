@@ -1,3 +1,5 @@
+from itertools import chain
+
 T = True
 F = False
 
@@ -5,10 +7,18 @@ class Node(object):
     """Base class for logic nodes.
 
     A node forms an expression tree for a sentence of symbolic logic."""
-    def __init__(self, l, r=None):
+    def __init__(self, l, *more):
         """Assigns the node's child/children."""
         self.l = l
-        self.r = r
+        if not more:
+            self.r = None
+            self.more = []
+        else:
+            self.r = more[0]
+            if len(more) == 1:
+                self.more = []
+            else:
+                self.more = more[1:]
     def eval(self, model):
         """Evaluates the logic tree rooted at this node against a supplied model.
 
@@ -22,7 +32,7 @@ class Node(object):
 
 class AndNode(Node):
     def eval(self, model):
-        return self.l.eval(model) and self.r.eval(model)
+        return all([n.eval(model) for n in chain([self.l, self.r], self.more)])
     def tree_print(self, d=0):
         print("  "*d + "&")
         self.l.tree_print(d+1)
@@ -30,7 +40,7 @@ class AndNode(Node):
 
 class OrNode(Node):
     def eval(self, model):
-        return self.l.eval(model) or self.r.eval(model)
+        return any([n.eval(model) for n in chain([self.l, self.r], self.more)])
     def tree_print(self, d=0):
         print("  "*d + "v")
         self.l.tree_print(d+1)
@@ -78,3 +88,24 @@ def test_compound_node_eval():
     assert not NotNode(OrNode(a, b)).eval(model)
     assert OrNode(NotNode(AndNode(a,b)), NotNode(OrNode(a, b))).eval(model)
     assert NotNode(OrNode(b, b))
+
+def test_many_ands():
+    a = AtomNode("A")
+    b = AtomNode("B")
+    model = {"A": T, "B": F}
+    assert AndNode(a, a, a).eval(model)
+    assert AndNode(a, a, a, a).eval(model)
+    assert not AndNode(a, a, b).eval(model)
+    assert not AndNode(a, b, a).eval(model)
+    assert not AndNode(b, a, a).eval(model)
+
+def test_many_ors():
+    a = AtomNode("A")
+    b = AtomNode("B")
+    model = {"A": T, "B": F}
+    assert OrNode(b, b, a).eval(model)
+    assert OrNode(b, a, a).eval(model)
+    assert OrNode(a, b, a).eval(model)
+    assert OrNode(a, a, b).eval(model)
+    assert not OrNode(b, b, b).eval(model)
+
