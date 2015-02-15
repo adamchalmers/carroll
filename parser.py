@@ -19,6 +19,7 @@ def _parse(exp):
     """Recursive-descent parsing algorithm for logic expressions. Returns a tree of Nodes."""
     if not exp:
         raise IOError("Empty string is not a wff.")
+
     char = exp.popleft()
     if meaning_of(char) == AtomNode:
         return AtomNode(char)
@@ -26,11 +27,14 @@ def _parse(exp):
         return NotNode(_parse(exp))
     elif char == "(":
         l = _parse(exp)
-        op = exp.popleft()
-        r = _parse(exp)
+        _op = exp[0]
+        more = []
+        while exp and exp[0] == _op:
+            op = exp.popleft()
+            more.append(_parse(exp))
         if not exp or exp.popleft() != ")":
             raise IOError("Missing )")
-        return meaning_of(op)(l, r)
+        return meaning_of(op)(l, *more)
     else:
         raise IOError("%s can't start a wff." % char)
 
@@ -110,9 +114,11 @@ def test_complex_parse():
 def test_multiple_operand_parse():
     n = parse("(A&A&A)")
     assert_is_instance(n, AndNode)
-    assert_is_instance(n.l, AtomNode)
-    assert_is_instance(n.r, AtomNode)
-    assert_is_instance(n.more[0], AtomNode)
+    for child in n.children:
+        assert_is_instance(child, AtomNode)
+
+def test_multiple_operand_fail():
+    assert_raises(IOError, parse, "(A|A&A)")
 
 if __name__ == "__main__":
     n = parse("((~A|B)v(B&~C))")
