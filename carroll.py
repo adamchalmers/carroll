@@ -1,6 +1,10 @@
-import truthtable
+from __future__ import print_function
 import sys
+
 import click
+
+import truthtable
+import transforms
 
 @click.group()
 def cli():
@@ -20,6 +24,12 @@ def equiv(expression_1, expression_2):
 def table(expression):
     """Outputs a truth table for a logical expression."""
     truthtable.print_truth_table(expression)
+
+@cli.command()
+@click.argument("expression")
+def dnf(expression):
+    """Converts an expression to disjunctive normal form."""
+    print(transforms.to_dnf(expression))
 
 if __name__ == "__main__":
     cli()

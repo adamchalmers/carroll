@@ -124,6 +124,11 @@ def test_multiple_operand_parse():
     for child in n.children:
         assert_is_instance(child, AtomNode)
 
+def test_dnf_parse():
+    exp = "((A & B & C) v (A & B & ~C) v (A & ~B & C))"
+    n = parse(exp)
+    assert_is_instance(n, OrNode)
+
 def test_multiple_operand_fail():
     assert_raises(IOError, parse, "(A|A&A)")
 
