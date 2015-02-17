@@ -17,14 +17,21 @@ def parse(exp):
 
 def _parse(exp):
     """Recursive-descent parsing algorithm for logic expressions. Returns a tree of Nodes."""
+
     if not exp:
         raise IOError("Empty string is not a wff.")
 
     char = exp.popleft()
+
+    # Atom node case
     if meaning_of(char) == AtomNode:
         return AtomNode(char)
+
+    # Single-operand node case (i.e. NOT node)
     elif meaning_of(char) == NotNode:
         return NotNode(_parse(exp))
+
+    # Multiple-operand node case (e.g. AND, NOT)
     elif char == "(":
         l = _parse(exp)
         _op = exp[0]
