@@ -1,7 +1,11 @@
 from itertools import chain
+from nose.tools import assert_raises
 
 T = True
 F = False
+
+class LogicError(Exception):
+    pass
 
 class Node(object):
     """Base class for logic nodes.
@@ -50,6 +54,8 @@ class OrNode(Node):
 
 class NotNode(Node):
     def eval(self, model):
+        if len(self.children) != 1:
+            raise LogicError("NOT is undefined for multiple children.")
         return not self.l.eval(model)
     def tree_print(self, d=0):
         print("  "*d +"~")
@@ -110,4 +116,9 @@ def test_many_ors():
     assert OrNode(a, b, a).eval(model)
     assert OrNode(a, a, b).eval(model)
     assert not OrNode(b, b, b).eval(model)
+
+def test_single_not():
+    n = NotNode(AtomNode("A"), AtomNode("B"))
+    model = {"A": True, "B": True}
+    assert_raises(LogicError, n.eval, model)
 
