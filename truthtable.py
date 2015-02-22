@@ -173,8 +173,12 @@ def test_not_all_equal():
     assert not all_equal([True, False])
     assert not all_equal([True, 2])
 
-def test_sat_info():
+def test_sat_info_simple():
     assert print_sat_info(truth_table("(Av~A)")) == (T, T)
     assert print_sat_info(truth_table("A")) == (T, F)
     assert print_sat_info(truth_table("~A")) == (T, F)
     assert print_sat_info(truth_table("(A&~A)")) == (F, F)
+
+def test_sat_info_harder():
+    assert print_sat_info(truth_table("(A&B&C)")) == (T, F)
+    assert print_sat_info(truth_table("(A&B&C&~A)")) == (F, F)
