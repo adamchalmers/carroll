@@ -28,5 +28,5 @@ To find out which characters Carroll interprets as connectives (and to define yo
 <h2>Planned features:</h2>
 
  - Check any number of propositions for equivalence, mutual satisfiability, etc
- - Transform expressions into a normal or simplified form
- - Use user-defined connectives
+ - Simplify expressions
+ - Use user-defined connectives?
