@@ -3,17 +3,20 @@ Carroll is a **C**ommand-line **A**pp for **R**apidly **R**emoving **O**bstacles
 
 <h2>Usage</h2>
 ```
-$ python carroll.py table "((A&B) v (~A&~B))"
+$ python carroll.py table "((A&B) v (~A&~B))" --verbose
  A  B  True
 ~A  B  False
  A ~B  False
 ~A ~B  True
+
+Satisfiable: True
+Tautology: False
 ```
 To find out which characters Carroll interprets as connectives (and to define your own), see `symbols.py`.
 
 **Commands:**
 
- - ```table```: Prints a truth table for an expression.
+ - ```table```: Prints a truth table for an expression. Optionally checks satisfiability and tautology too.
  - ```equiv```: Checks two expressions for logical equivalence (i.e. whether they compute the same boolean function)
  - ```cnf``` and ```dnf```: Converts an expression to its equivalent in conjunctive or disjunctive normal form.
 
