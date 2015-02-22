@@ -20,15 +20,20 @@ class Row():
         return isinstance(other, Row) and self.model == other.model and self.value == other.value
 
 
-def print_truth_table(exp, output=True):
+def print_truth_table(exp, verbose, output=True):
     """Outputs the truth table for an expression to stdout."""
     try:
         tree = parser.parse(exp)
+        table = truth_table(exp)
     except IOError as e:
         print("Parse error: %s" % e)
         return
-    for row in truth_table(exp):
+    for row in table:
         print(row)
+    if verbose:
+        print()
+        table = truth_table(exp)
+        print_sat_info(table)
 
 def truth_table(exp):
     """Generates truth table rows from a proposition string."""
@@ -70,6 +75,19 @@ def equivalent(exp1, exp2):
     table1, table2 = truth_table(exp1), truth_table(exp2)
     return all([row1 == row2 for row1, row2 in zip(table1, table2)])
 
+def print_sat_info(table):
+    satisfiable = False
+    tautology = True
+    for row in table:
+        if row.value:
+            satisfiable = True
+        else:
+            tautology = False
+
+    print("Satisfiable:\t%s" % satisfiable)
+    print("Tautology:\t%s" % tautology)
+
+    return (satisfiable, tautology)
 
 # Tests
 
@@ -154,3 +172,9 @@ def test_not_all_equal():
     assert not all_equal([1,2])
     assert not all_equal([True, False])
     assert not all_equal([True, 2])
+
+def test_sat_info():
+    assert print_sat_info(truth_table("(Av~A)")) == (T, T)
+    assert print_sat_info(truth_table("A")) == (T, F)
+    assert print_sat_info(truth_table("~A")) == (T, F)
+    assert print_sat_info(truth_table("(A&~A)")) == (F, F)

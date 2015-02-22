@@ -21,9 +21,10 @@ def equiv(expression_1, expression_2):
 
 @cli.command()
 @click.argument("expression")
-def table(expression):
+@click.option("--verbose", is_flag=True, default=False, help="Check for satisfiability, validity etc.")
+def table(expression, verbose):
     """Outputs a truth table for a logical expression."""
-    truthtable.print_truth_table(expression)
+    truthtable.print_truth_table(expression, verbose)
 
 @cli.command()
 @click.argument("expression")
