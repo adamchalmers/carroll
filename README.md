@@ -11,6 +11,12 @@ $ python carroll.py table "((A&B) v (~A&~B))"
 ```
 To find out which characters Carroll interprets as connectives (and to define your own), see `symbols.py`.
 
+**Commands:**
+
+ - ```table```: Prints a truth table for an expression.
+ - ```equiv```: Checks two expressions for logical equivalence (i.e. whether they compute the same boolean function)
+ - ```cnf``` and ```dnf```: Converts an expression to its equivalent in conjunctive or disjunctive normal form.
+
 **Dependencies:** Carroll uses Nose and Click.
 
 <h2>Current features:</h2>
