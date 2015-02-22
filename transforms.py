@@ -1,6 +1,6 @@
 import truthtable
 import parser
-from nose.tools import assert_equals
+from nose.tools import assert_equals, assert_items_equal
 
 def to_dnf(expression):
     """Converts a proposition string into a DNF string."""
@@ -47,13 +47,23 @@ def test_basic_dnf():
     actual = to_dnf(expression)
     assert_equals(expected, actual)
 
+def test_longer_dnf():
+    expression_cnf = "((~A v ~B v ~C) & (~A v B v ~C) & (~A v B v C) & (A v ~B v ~C) & (A v ~B v C))"
+    actual = to_dnf(expression_cnf)
+    expected_dnf = "((A & B & ~C) v (~A & ~B & C) v (~A & ~B & ~C))"
+    assert_equals(expected_dnf, actual)
+
 def test_basic_cnf():
     expression = "(~A & (B v C))"
-    expected = "((~Av~Bv~C) & (~Av~BvC) & (~AvBv~C) & (~AvBvC) & (AvBvC))"
+    expected = "((~A v ~B v ~C) & (~A v ~B v C) & (~A v B v ~C) & (~A v B v C) & (A v B v C))"
     actual = to_cnf(expression)
-
-    expected = expected.replace(" ", "")
-    actual = actual.replace(" ", "")
-
     assert_equals(expected, actual)
 
+def test_longer_cnf():
+    expression_dnf = "((A & B & ~C) v (~A & ~B & C) v (~A & ~B & ~C))"
+    actual = to_cnf(expression_dnf)
+    expected_cnf = "((~A v ~B v ~C) & (~A v B v ~C) & (~A v B v C) & (A v ~B v ~C) & (A v ~B v C))"
+
+    # We strip out the opening/closing brackets, and compare the clauses
+    # so the strangely-ordered CNF conversion doesn't ruin our test.
+    assert_items_equal(expected_cnf[1:-1].split(" & "), actual[1:-1].split(" & "))
