@@ -31,5 +31,11 @@ def dnf(expression):
     """Converts an expression to disjunctive normal form."""
     print(transforms.to_dnf(expression))
 
+@cli.command()
+@click.argument("expression")
+def cnf(expression):
+    """Converts an expression to conjunctive normal form."""
+    print(transforms.to_cnf(expression))
+
 if __name__ == "__main__":
     cli()
