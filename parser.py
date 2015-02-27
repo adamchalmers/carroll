@@ -3,7 +3,7 @@ import symbols
 from collections import deque
 from nose.tools import assert_equals, assert_raises, assert_is_instance
 from symbols import meaning_of
-from nodes import AtomNode, NotNode, AndNode, OrNode
+from nodes import AtomNode, NotNode, AndNode, OrNode, XorNode, IfNode, IffNode
 
 def parse(exp):
     """Starts parsing a logical expression (supplied as a string). Returns a tree of Nodes."""
@@ -131,6 +131,24 @@ def test_dnf_parse():
 
 def test_multiple_operand_fail():
     assert_raises(IOError, parse, "(A|A&A)")
+
+def test_parse_if():
+    n = parse("(A>B)")
+    assert_is_instance(n, IfNode)
+    assert_is_instance(n.l, AtomNode)
+    assert_is_instance(n.r, AtomNode)
+
+def test_parse_iff():
+    n = parse("(A=B)")
+    assert_is_instance(n, IffNode)
+    assert_is_instance(n.l, AtomNode)
+    assert_is_instance(n.r, AtomNode)
+
+def test_parse_xor():
+    n = parse("(AxB)")
+    assert_is_instance(n, XorNode)
+    assert_is_instance(n.l, AtomNode)
+    assert_is_instance(n.r, AtomNode)
 
 if __name__ == "__main__":
     n = parse("((~A|B)v(B&~C))")

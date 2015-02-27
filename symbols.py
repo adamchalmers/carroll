@@ -6,6 +6,9 @@ NODE_TYPES = [(string.ascii_uppercase, nodes.AtomNode),
     ("&^", nodes.AndNode),
     ("|v", nodes.OrNode),
     ("!~", nodes.NotNode),
+    ("x", nodes.XorNode),
+    (">", nodes.IfNode),
+    ("=", nodes.IffNode),
 ]
 
 # Map every recognized character to its node type.
