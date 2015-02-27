@@ -53,11 +53,9 @@ def find_atoms_in_tree(tree):
 
 def _find_atoms_in_tree(tree, atoms):
     """Recursively add atom characters to the atoms list."""
-    print tree
     if type(tree) == AtomNode:
         atoms.add(tree.l)
     else:
-        print tree.children
         for child in tree.children:
             _find_atoms_in_tree(child, atoms)
 

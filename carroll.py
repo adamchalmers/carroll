@@ -5,6 +5,7 @@ import click
 
 import truthtable
 import transforms
+import proofs
 
 @click.group()
 def cli():
@@ -37,6 +38,19 @@ def dnf(expression):
 def cnf(expression):
     """Converts an expression to conjunctive normal form."""
     print(transforms.to_cnf(expression))
+
+@cli.command()
+def proof():
+    """Checks a proof for validity."""
+    exp = raw_input()
+    expressions = []
+    while exp:
+        expressions.append(exp)
+        exp = raw_input()
+    if proofs.valid_proof(expressions):
+        print("Valid")
+    else:
+        print("Invalid")
 
 if __name__ == "__main__":
     cli()
