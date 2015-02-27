@@ -45,6 +45,22 @@ def _parse(exp):
     else:
         raise IOError("%s can't start a wff." % char)
 
+def find_atoms_in_tree(tree):
+    """Returns a list of atom characters in the tree."""
+    atoms = set()
+    _find_atoms_in_tree(tree, atoms)
+    return atoms
+
+def _find_atoms_in_tree(tree, atoms):
+    """Recursively add atom characters to the atoms list."""
+    print tree
+    if type(tree) == AtomNode:
+        atoms.add(tree.l)
+    else:
+        print tree.children
+        for child in tree.children:
+            _find_atoms_in_tree(child, atoms)
+
 def test_error_parse():
     assert_raises(IOError, parse, "")
     assert_raises(IOError, parse, "(")
@@ -150,6 +166,15 @@ def test_parse_xor():
     assert_is_instance(n.l, AtomNode)
     assert_is_instance(n.r, AtomNode)
 
-if __name__ == "__main__":
-    n = parse("((~A|B)v(B&~C))")
-    n.tree_print()
+def test_find_atoms_trivial():
+    n = parse("A")
+    atoms = [atom for atom in find_atoms_in_tree(n)]
+    assert_equals(atoms, ["A"])
+
+def test_find_atoms_simple():
+    n = parse("((A&B)vC)")
+    assert_equals(find_atoms_in_tree(n), set(["A", "B", "C"]))
+
+def test_find_atoms_regular():
+    n = parse("((A & (A>B))>B)")
+    assert_equals(find_atoms_in_tree(n), set(["A", "B"]))

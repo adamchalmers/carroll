@@ -42,6 +42,12 @@ def truth_table(exp):
     for truth in gen_truths(atoms):
         yield Row(truth, tree.eval(truth))
 
+def from_tree(tree):
+    """Generates a truth table from a parse tree."""
+    atoms = [atom for atom in parser.find_atoms_in_tree(tree)]
+    for truth in gen_truths(atoms):
+        yield Row(truth, tree.eval(truth))
+
 def find_atoms(exp):
     """Returns a list of atoms in a proposition string."""
     return list(set([char for char in exp if char in string.ascii_uppercase]))
