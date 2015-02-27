@@ -22,6 +22,7 @@ To find out which characters Carroll interprets as connectives (and to define yo
  - ```table```: Prints a truth table for an expression. Optionally checks satisfiability and tautology too.
  - ```equiv```: Checks two expressions for logical equivalence (i.e. whether they compute the same boolean function)
  - ```cnf``` and ```dnf```: Converts an expression to its equivalent in conjunctive or disjunctive normal form.
+ - ```proof```: Accepts propositions from stdin until an empty proposition is entered. Checks if the last proposition (conclusion) is implied by the previous propositions (premises).
 
 <h2>Planned features:</h2>
 
