@@ -2,6 +2,7 @@
 Carroll is a **C**ommand-line **A**pp for **R**apidly **R**emoving **O**bstacles to **L**earning **L**ogic.
 
 <h2>Usage</h2>
+Example: using Carroll to get a truth table for an expression.
 ```
 $ python carroll.py table "((A&B) v (~A&~B))" --verbose
  A  B  True
@@ -11,14 +12,15 @@ $ python carroll.py table "((A&B) v (~A&~B))" --verbose
 
 Satisfiable: True
 Tautology: False
-
+```
+Example: using Carroll to check the validity of modus ponens.
+```
 $ python carroll.py proof
  > (A>B)
  > A
  > B
  >
 Valid
-
 ```
 To find out which characters Carroll interprets as connectives (and to define your own), see `symbols.py`.
 
