@@ -1,4 +1,4 @@
-from parser import parse, find_atoms_in_tree
+from parsing import parse, find_atoms_in_tree
 import truthtable
 from nodes import AndNode, IfNode, AtomNode
 from nose.tools import assert_is_instance

@@ -1,5 +1,5 @@
 from __future__ import print_function
-import parser
+import parsing
 import symbols
 import string
 from nose.tools import assert_items_equal, assert_equal
@@ -23,7 +23,7 @@ class Row():
 def print_truth_table(exp, verbose, output=True):
     """Outputs the truth table for an expression to stdout."""
     try:
-        tree = parser.parse(exp)
+        tree = parsing.parse(exp)
         table = truth_table(exp)
     except IOError as e:
         print("Parse error: %s" % e)
@@ -37,14 +37,14 @@ def print_truth_table(exp, verbose, output=True):
 
 def truth_table(exp):
     """Generates truth table rows from a proposition string."""
-    tree = parser.parse(exp)
+    tree = parsing.parse(exp)
     atoms = find_atoms(exp)
     for truth in gen_truths(atoms):
         yield Row(truth, tree.eval(truth))
 
 def from_tree(tree):
     """Generates a truth table from a parse tree."""
-    atoms = [atom for atom in parser.find_atoms_in_tree(tree)]
+    atoms = [atom for atom in parsing.find_atoms_in_tree(tree)]
     for truth in gen_truths(atoms):
         yield Row(truth, tree.eval(truth))
 

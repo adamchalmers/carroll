@@ -1,5 +1,5 @@
 import truthtable
-import parser
+import parsing
 from nose.tools import assert_equals, assert_items_equal
 
 def to_dnf(expression):
