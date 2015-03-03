@@ -4,7 +4,7 @@ import sys
 import click
 
 import truthtable
-import transforms
+import normal_forms
 import proofs
 
 @click.group()
@@ -31,13 +31,13 @@ def table(expression, verbose):
 @click.argument("expression")
 def dnf(expression):
     """Converts an expression to disjunctive normal form."""
-    print(transforms.to_dnf(expression))
+    print(normal_forms.to_dnf(expression))
 
 @cli.command()
 @click.argument("expression")
 def cnf(expression):
     """Converts an expression to conjunctive normal form."""
-    print(transforms.to_cnf(expression))
+    print(normal_forms.to_cnf(expression))
 
 @cli.command()
 def proof():
