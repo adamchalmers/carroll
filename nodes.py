@@ -1,5 +1,5 @@
-from itertools import chain
 from nose.tools import assert_raises, with_setup
+import string
 
 T = True
 F = False
@@ -13,6 +13,7 @@ class Node(object):
     A node forms an expression tree for a sentence of symbolic logic."""
 
     def __init__(self, *children):
+        self.check_valid(children)
         self.children = children
 
     def eval(self, model):
@@ -21,9 +22,16 @@ class Node(object):
         Model is an assignment of truth values to atoms (dict of string -> bool)."""
         raise NotImplementedError
 
-    def tree_print(self, d=0):
-        """Recursively prints the logic tree to stdout."""
-        raise NotImplementedError
+    def check_valid(self, children):
+        """Ensures the children nodes are valid. Raises LogicError if they're not."""
+        if len(children) == 0:
+            raise LogicError("%s can't have 0 children!", type(self))
+        self.check_valid_specific(children)
+
+    def check_valid_specific(self, children):
+        """Overridden by children nodes to implement custom child-checking logic.
+        Should raise LogicError if children are invalid."""
+        pass
 
     @property
     def l(self):
@@ -39,27 +47,16 @@ class Node(object):
 class AndNode(Node):
     def eval(self, model):
         return all([n.eval(model) for n in self.children])
-    def tree_print(self, d=0):
-        print("  "*d + "&")
-        self.l.tree_print(d+1)
-        self.r.tree_print(d+1)
 
 class OrNode(Node):
     def eval(self, model):
         return any([n.eval(model) for n in self.children])
-    def tree_print(self, d=0):
-        print("  "*d + "v")
-        self.l.tree_print(d+1)
-        self.r.tree_print(d+1)
 
 class NotNode(Node):
     def eval(self, model):
         if len(self.children) != 1:
             raise LogicError("NOT is undefined for multiple children.")
         return not self.l.eval(model)
-    def tree_print(self, d=0):
-        print("  "*d +"~")
-        self.l.tree_print(d+1)
 
 class IfNode(Node):
     def eval(self, model):
@@ -84,17 +81,21 @@ class AtomNode(Node):
     They are the only node whose children are strings, not other nodes."""
     def eval(self, model):
         return model[self.l]
-    def tree_print(self, d=0):
-        print("  "*d + self.l)
+    def check_valid_specific(self, children):
+        if len(children) != 1:
+            raise LogicError("Can't have multiple atomic propositions in one atom %s" % str(children))
+        if children[0] not in string.uppercase:
+            raise LogicError("Atoms must be capital letters (your atom is %s)" % str(children[0]))
+        pass
 
 
 def setup_tf_nodes():
     global a
     global b
     global model
-    a = AtomNode("a")
-    b = AtomNode("b")
-    model = {"a": T, "b": F}
+    a = AtomNode("A")
+    b = AtomNode("B")
+    model = {"A": T, "B": F}
 
 def teardown():
     pass
@@ -129,10 +130,10 @@ def test_xor_nodes():
     assert not XorNode(b, b).eval(model)
 
 def test_multiple_xor_nodes():
-    a = AtomNode("a")
-    b = AtomNode("b")
-    c = AtomNode("c")
-    model = {"a": T, "b": F, "c": F}
+    a = AtomNode("A")
+    b = AtomNode("B")
+    c = AtomNode("C")
+    model = {"A": T, "B": F, "C": F}
     assert XorNode(a, b, c).eval(model)
     assert XorNode(a, a, c).eval(model)
     assert XorNode(b, a, a).eval(model)
@@ -149,10 +150,10 @@ def test_iff_nodes():
     assert IffNode(b, b).eval(model)
 
 def test_multiple_iff_nodes():
-    a = AtomNode("a")
-    b = AtomNode("b")
-    c = AtomNode("c")
-    model = {"a": T, "b": F, "c": F}
+    a = AtomNode("A")
+    b = AtomNode("B")
+    c = AtomNode("C")
+    model = {"A": T, "B": F, "C": F}
     assert not IffNode(a, b, c).eval(model)
     assert not IffNode(a, a, c).eval(model)
     assert not IffNode(b, a, a).eval(model)
@@ -185,8 +186,19 @@ def test_many_ors():
     assert OrNode(a, a, b).eval(model)
     assert not OrNode(b, b, b).eval(model)
 
+
 def test_single_not():
     n = NotNode(AtomNode("A"), AtomNode("B"))
     model = {"A": True, "B": True}
     assert_raises(LogicError, n.eval, model)
+
+@with_setup(setup_tf_nodes, teardown)
+def test_single_atom():
+    assert_raises(LogicError, AtomNode, *(a,b))
+
+def test_atoms_uppercase():
+    assert_raises(LogicError, AtomNode, "a")
+
+def test_check_valid():
+    assert_raises(LogicError, AtomNode)
 
