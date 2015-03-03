@@ -11,6 +11,14 @@ $ python carroll.py table "((A&B) v (~A&~B))" --verbose
 
 Satisfiable: True
 Tautology: False
+
+$ python carroll.py proof
+ > (A>B)
+ > A
+ > B
+ >
+Valid
+
 ```
 To find out which characters Carroll interprets as connectives (and to define your own), see `symbols.py`.
 
