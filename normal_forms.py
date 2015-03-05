@@ -1,5 +1,5 @@
 import truthtable
-import parsing
+import functools
 from nose.tools import assert_equals, assert_items_equal
 
 def to_dnf(expression):
@@ -8,7 +8,7 @@ def to_dnf(expression):
     output = "("
     for row in table:
         if row.value:
-            output += "(%s) v " % model_to_and_clause(row.model)
+            output += "(%s) v " % and_clause(row.model)
     output = output[:-3] + ")"
     return output
 
@@ -17,29 +17,23 @@ def to_cnf(expression):
     output = "("
     for row in table:
         if not row.value:
-            output += "(%s) & " % model_to_cnf_clause(row.model)
+            output += "(%s) & " % or_clause(row.model)
     output = output[:-3] + ")"
     return output
 
-def model_to_and_clause(model):
+def model_to_clause(model, truth, symbol):
     l = []
-    for atom, truth in model.items():
-        if truth:
+    for atom, value in model.items():
+        if value == truth:
             l.append((atom, atom))
         else:
             l.append((atom, "~"+atom))
     l.sort()
-    return " & ".join([elem[1] for elem in l])
+    symbol = " %s " % symbol
+    return symbol.join([elem[1] for elem in l])
 
-def model_to_cnf_clause(model):
-    l = []
-    for atom, truth in model.items():
-        if truth:
-            l.append((atom, "~"+atom))
-        else:
-            l.append((atom, atom))
-    l.sort()
-    return " v ".join([elem[1] for elem in l])
+and_clause = functools.partial(model_to_clause, truth=True, symbol="&")
+or_clause = functools.partial(model_to_clause, truth=False, symbol="v")
 
 def test_basic_dnf():
     expression = "(A & (B | C))"
