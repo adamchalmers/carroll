@@ -33,6 +33,13 @@ class Node(object):
         Should raise LogicError if children are invalid."""
         pass
 
+    def atoms(self):
+        """Return a set of characters which are atoms in this expression."""
+        children_atoms = set()
+        for child in self.children:
+            children_atoms = children_atoms | child.atoms()
+        return children_atoms
+
     @property
     def l(self):
         return self.children[0]
@@ -87,6 +94,8 @@ class AtomNode(Node):
         if children[0] not in string.uppercase:
             raise LogicError("Atoms must be capital letters (your atom is %s)" % str(children[0]))
         pass
+    def atoms(self):
+        return set(self.l)
 
 
 def setup_tf_nodes():
@@ -129,9 +138,8 @@ def test_xor_nodes():
     assert XorNode(b, a).eval(model)
     assert not XorNode(b, b).eval(model)
 
+@with_setup(setup_tf_nodes, teardown)
 def test_multiple_xor_nodes():
-    a = AtomNode("A")
-    b = AtomNode("B")
     c = AtomNode("C")
     model = {"A": T, "B": F, "C": F}
     assert XorNode(a, b, c).eval(model)
@@ -149,9 +157,8 @@ def test_iff_nodes():
     assert not IffNode(b, a).eval(model)
     assert IffNode(b, b).eval(model)
 
+@with_setup(setup_tf_nodes, teardown)
 def test_multiple_iff_nodes():
-    a = AtomNode("A")
-    b = AtomNode("B")
     c = AtomNode("C")
     model = {"A": T, "B": F, "C": F}
     assert not IffNode(a, b, c).eval(model)
@@ -186,10 +193,9 @@ def test_many_ors():
     assert OrNode(a, a, b).eval(model)
     assert not OrNode(b, b, b).eval(model)
 
-
+@with_setup(setup_tf_nodes, teardown)
 def test_single_not():
-    n = NotNode(AtomNode("A"), AtomNode("B"))
-    model = {"A": True, "B": True}
+    n = NotNode(a, b)
     assert_raises(LogicError, n.eval, model)
 
 @with_setup(setup_tf_nodes, teardown)
@@ -202,3 +208,14 @@ def test_atoms_uppercase():
 def test_check_valid():
     assert_raises(LogicError, AtomNode)
 
+@with_setup(setup_tf_nodes, teardown)
+def test_simple_find_atoms():
+    n = AndNode(a, b)
+    assert n.atoms() == {"A", "B"}
+
+@with_setup(setup_tf_nodes, teardown)
+def test_find_atoms():
+    c = AtomNode("C")
+    d = AtomNode("D")
+    n = AndNode(XorNode(a, a), OrNode(b, IffNode(c, d)))
+    assert n.atoms() == {"A", "B", "C", "D"}

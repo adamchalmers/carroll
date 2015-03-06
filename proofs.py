@@ -1,4 +1,4 @@
-from parsing import parse, find_atoms_in_tree
+from parsing import parse
 import truthtable
 from nodes import AndNode, IfNode, AtomNode
 from nose.tools import assert_is_instance
@@ -21,7 +21,6 @@ def valid_proof(expressions):
     """
     trees = [parse(e) for e in expressions]
     argument = serialize_argument_trees(trees)
-    find_atoms_in_tree(argument)
     return all([row.value for row in truthtable.from_tree(argument)])
 
 def test_serialize_argtree_simple():

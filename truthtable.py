@@ -44,7 +44,7 @@ def truth_table(exp):
 
 def from_tree(tree):
     """Generates a truth table from a parse tree."""
-    atoms = [atom for atom in parsing.find_atoms_in_tree(tree)]
+    atoms = list(tree.atoms())
     for truth in gen_truths(atoms):
         yield Row(truth, tree.eval(truth))
 
