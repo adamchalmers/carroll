@@ -22,9 +22,17 @@ $ python carroll.py proof
  >
 Valid
 ```
-To find out which characters Carroll interprets as connectives (and to define your own), see `symbols.py`.
 
-**Dependencies:** Carroll uses Nose and Click.
+<h3>Connectives/operators:</h3>
+- **AND:** & or ^
+- **OR:** \| or v
+- **NOT:** ~ or !
+- **IF:** >
+- **IFF:** =
+- **XOR:** x
+
+<h3>Dependencies</h3> 
+Carroll uses Nose and Click.
 
 
 <h2>Commands</h2>
